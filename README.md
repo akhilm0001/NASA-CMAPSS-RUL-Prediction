@@ -234,7 +234,7 @@ The following visualizations are stored in the repository's `images/` directory.
 
 ### 4. 📈 Actual vs. Predicted RUL — FD003
 
-![Actual vs Predicted RUL FD003](<./images/actal vs predicted fd003.png>)
+![Actual vs Predicted RUL FD003](<./images/actual vs predicted fd003.png>)
 
 **Image path:** `images/actal vs predicted fd003.png`
 
