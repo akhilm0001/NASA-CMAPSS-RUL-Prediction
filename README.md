@@ -1,8 +1,10 @@
 # ✈️ Predictive Maintenance & Remaining Useful Life (RUL) Prediction
 
-**Machine Learning | NASA C-MAPSS | Python | Scikit-learn | Streamlit**
+**Machine Learning | NASA C-MAPSS | Python | Scikit-learn | Streamlit | Hugging Face**
 
-A machine learning project that predicts the Remaining Useful Life (RUL) of turbofan engines using NASA's C-MAPSS engine degradation simulation dataset. The project covers data preprocessing, feature engineering, regression model development, performance evaluation, and an interactive Streamlit dashboard.
+A machine learning project that predicts the Remaining Useful Life (RUL) of turbofan engines using NASA's C-MAPSS engine degradation simulation dataset. The project covers data preprocessing, feature engineering, regression model development, performance evaluation, and an interactive Streamlit application.
+
+🚀 **[Launch the Live RUL Prediction App](https://nasa-cmapss-rul-prediction-takc47paf5jckgwuuuovsz.streamlit.app/)**
 
 ---
 
@@ -16,7 +18,7 @@ A machine learning project that predicts the Remaining Useful Life (RUL) of turb
 - [Machine Learning Models](#-machine-learning-models)
 - [Model Performance](#-model-performance)
 - [Visualizations](#-visualizations)
-- [Streamlit Dashboard](#-streamlit-dashboard)
+- [Live Streamlit Application](#-live-streamlit-application)
 - [Project Structure](#-project-structure)
 - [Installation](#-installation)
 - [How to Run](#-how-to-run)
@@ -33,9 +35,11 @@ Aircraft engines operate under demanding conditions. Unexpected failures can cau
 
 Predictive maintenance uses historical operating data and machine learning to estimate equipment degradation and support maintenance planning before failure occurs.
 
-This project uses NASA's C-MAPSS turbofan engine degradation simulation dataset to develop regression models that estimate an engine's remaining useful life based on operational settings and sensor measurements.
+This project uses NASA's C-MAPSS turbofan engine degradation simulation dataset to develop regression models that estimate an engine's Remaining Useful Life based on operational settings and sensor measurements.
 
-The project evaluates four datasets — FD001, FD002, FD003, and FD004 — and uses Random Forest and Gradient Boosting regression models to estimate RUL.
+The project evaluates four datasets — FD001, FD002, FD003, and FD004 — using Random Forest and Gradient Boosting regression models.
+
+The trained models are integrated into an interactive Streamlit application that supports engine data selection, manual feature input, and RUL prediction.
 
 ### 🎯 Objectives
 
@@ -46,7 +50,17 @@ The project evaluates four datasets — FD001, FD002, FD003, and FD004 — and u
 - 🤖 Train and compare machine learning regression models.
 - 📊 Evaluate predictions using MAE and RMSE.
 - ✈️ Estimate the remaining useful life of turbofan engines.
-- 🖥️ Present predictions and model results through a Streamlit dashboard.
+- 🖥️ Deploy an interactive prediction application using Streamlit.
+- ☁️ Host larger trained model files on Hugging Face.
+
+### 🌐 Live Application
+
+**[Open the NASA C-MAPSS RUL Prediction Dashboard](https://nasa-cmapss-rul-prediction-takc47paf5jckgwuuuovsz.streamlit.app/)**
+
+The application supports all four datasets and two input modes:
+
+- **NASA Test Data:** Select an engine and predict its RUL using the latest available sensor readings.
+- **Manual / New Engine Data:** Enter the feature values expected by the selected model and generate a prediction.
 
 ---
 
@@ -61,8 +75,6 @@ This project uses the **NASA C-MAPSS Turbofan Engine Degradation Simulation Data
 The dataset contains simulated turbofan engine run-to-failure data, including engine identifiers, operating cycles, operational settings, and sensor measurements.
 
 ### Dataset Files
-
-Each of the four subsets includes training data, test data, and a corresponding RUL file containing reference targets for the test engines.
 
 | Dataset | Training file | Test file | Test RUL file |
 |---|---|---|---|
@@ -82,9 +94,9 @@ Each of the four subsets includes training data, test data, and a corresponding 
 
 ### Role of the RUL Files
 
-- **Training files:** Contain engine operating cycles and sensor readings used to train the models. RUL targets can be derived from the run-to-failure training trajectories.
+- **Training files:** Contain engine operating cycles and sensor readings used to train the models. Training RUL targets can be derived from run-to-failure trajectories.
 - **Test files:** Contain sensor readings for test engines up to their last observed cycles.
-- **RUL files:** Provide reference remaining useful life values for the corresponding test engines and can be used to evaluate predictions.
+- **RUL files:** Provide reference remaining useful life values for test engines and can be used to evaluate predictions.
 
 The four subsets enable model evaluation under different operating conditions and fault modes.
 
@@ -93,41 +105,44 @@ The four subsets enable model evaluation under different operating conditions an
 ## 🔄 Project Workflow
 
 ```text
-              ✈️ NASA C-MAPSS Dataset
-                         |
-                         v
-                  📂 Data Loading
-                         |
-                         v
-             🔍 Exploratory Data Analysis
-                         |
-                         v
-                 🧹 Data Preprocessing
-                         |
-                         v
-                 ⚙️ RUL Target Creation
-                         |
-                         v
-                 🔧 Feature Engineering
-                         |
-                         v
-                  📊 Train-Test Split
-                         |
-                         v
-                  🤖 Model Training
-                         |
-                         v
-                📈 Model Evaluation
-                   (MAE and RMSE)
-                         |
-                         v
-                  🏆 Model Selection
-                         |
-                         v
-                   ✈️ RUL Prediction
-                         |
-                         v
-                🖥️ Streamlit Dashboard
+             ✈️ NASA C-MAPSS Dataset
+                       |
+                       v
+                 📂 Data Loading
+                       |
+                       v
+            🔍 Exploratory Data Analysis
+                       |
+                       v
+                🧹 Data Preprocessing
+                       |
+                       v
+                ⚙️ RUL Target Creation
+                       |
+                       v
+                🔧 Feature Engineering
+                       |
+                       v
+                 📊 Model Training
+                       |
+                       v
+              🤖 Regression Models
+                       |
+                       v
+               📈 Model Evaluation
+                  (MAE and RMSE)
+                       |
+                       v
+                 🏆 Model Selection
+                       |
+                       v
+                  ✈️ RUL Prediction
+                       |
+                       v
+                🖥️ Streamlit App
+                       |
+                       v
+                  ☁️ Deployment
 ```
 
 ### Workflow Description
@@ -135,13 +150,13 @@ The four subsets enable model evaluation under different operating conditions an
 1. **Data loading:** Load the FD001, FD002, FD003, and FD004 datasets.
 2. **Exploratory data analysis:** Examine sensor measurements, operating conditions, engine cycles, and degradation patterns.
 3. **Data preprocessing:** Prepare sensor and operational data for machine learning.
-4. **RUL target creation:** Generate training targets from the run-to-failure data and use the supplied RUL files as test reference targets.
+4. **RUL target creation:** Generate training targets and use supplied RUL files as reference targets for test evaluation.
 5. **Feature engineering:** Prepare relevant features for regression modelling.
 6. **Model training:** Train Random Forest and Gradient Boosting regressors.
 7. **Model evaluation:** Measure prediction errors using MAE and RMSE.
 8. **Model selection:** Select a model for each dataset based on the evaluated results.
-9. **RUL prediction:** Estimate the remaining useful life of an engine.
-10. **Dashboard:** Present prediction results and visualizations through Streamlit.
+9. **Application development:** Integrate the trained models into a Streamlit interface.
+10. **Cloud deployment:** Deploy the application on Streamlit Community Cloud and host larger model files on Hugging Face.
 
 ---
 
@@ -153,10 +168,13 @@ The four subsets enable model evaluation under different operating conditions an
 | Pandas | Data manipulation and preprocessing |
 | NumPy | Numerical computation |
 | Scikit-learn | Model training and evaluation |
+| Joblib | Saving and loading trained models |
 | Matplotlib | Data visualization |
 | Seaborn | Statistical visualization |
 | Jupyter Notebook | Experimentation and analysis |
-| Streamlit | Interactive dashboard |
+| Streamlit | Interactive web application |
+| Hugging Face Hub | Hosting and downloading larger model files |
+| Git and GitHub | Version control and source code hosting |
 
 ---
 
@@ -166,23 +184,23 @@ The four subsets enable model evaluation under different operating conditions an
 
 Random Forest combines predictions from multiple decision trees to estimate RUL. It can model nonlinear relationships between engine sensor readings and degradation.
 
-**Selected model for:** FD002 and FD004.
+**Selected models:** FD002 and FD004.
 
 ### 2. Gradient Boosting Regressor
 
 Gradient Boosting builds decision trees sequentially, with each successive tree learning to reduce the errors made by the existing ensemble.
 
-**Selected model for:** FD001 and FD003.
+**Selected models:** FD001 and FD003.
 
 ### Evaluation Metrics
 
 **Mean Absolute Error (MAE)**
 
-Measures the average absolute difference between actual and predicted RUL. Lower values indicate smaller average errors.
+Measures the average absolute difference between actual and predicted RUL. Lower values indicate smaller average prediction errors.
 
 **Root Mean Squared Error (RMSE)**
 
-Measures the square root of the average squared prediction error. Larger prediction errors have a greater effect on this metric.
+Measures the square root of the average squared prediction error. Larger errors have a greater effect on this metric.
 
 For both metrics, lower values indicate better predictive performance when the evaluation setup is comparable.
 
@@ -206,96 +224,93 @@ The following table presents the reported independent test results for the selec
 - Gradient Boosting was selected for FD001 and FD003.
 - Random Forest was selected for FD002 and FD004.
 
-These results represent this project's evaluation. Comparisons with other implementations require consistent preprocessing, RUL definitions, and evaluation procedures.
+These results represent this project's reported evaluation. Comparisons with other implementations require consistent preprocessing, RUL definitions, and evaluation procedures.
 
 ---
 
 ## 📉 Visualizations
 
-The following visualizations are stored in the repository's `images/` directory.
+The following visualizations are referenced from the repository's `images/` directory.
 
 ### 1. ✈️ Streamlit RUL Prediction Dashboard
 
 ![Streamlit RUL Prediction Dashboard](./images/streamlit_prediction.png)
 
-**Image path:** `images/streamlit_prediction.png`
-
 ### 2. 📊 Model Performance Comparison
 
 ![Model Performance Comparison](./images/model-performance.png)
-
-**Image path:** `images/model-performance.png`
 
 ### 3. 🔍 Feature Importance — FD003
 
 ![Feature Importance FD003](./images/feature_importance_fd003.png)
 
-**Image path:** `images/feature_importance_fd003.png`
-
 ### 4. 📈 Actual vs. Predicted RUL — FD003
 
-![Actual vs Predicted RUL FD003](<./images/actual vs predicted fd003.png>)
+![Actual vs Predicted RUL FD003](./images/actual%20vs%20predicted%20fd003.png)
 
-**Image path:** `images/actal vs predicted fd003.png`
-
-**Important:** The image filenames above retain the names you provided. GitHub requires the paths to match the uploaded filenames exactly, including spelling, spaces, underscores, hyphens, and capitalization.
+**Note:** Ensure that each image filename matches the file actually uploaded to GitHub. Image names and capitalization must match exactly for the previews to display correctly.
 
 ---
 
-## 🖥️ Streamlit Dashboard
+## 🖥️ Live Streamlit Application
 
-The Streamlit application provides an interface for displaying RUL predictions and model evaluation results.
+The deployed application allows users to interact with the trained models without running the project locally.
 
-![Streamlit Dashboard Preview](./images/streamlit_prediction.png)
+### Application Features
 
-The dashboard complements the model analysis by presenting results visually.
+- Select FD001, FD002, FD003, or FD004.
+- Choose between NASA test data and manual engine data.
+- Select an engine from the available test records.
+- Review the latest available sensor readings.
+- Generate an estimated RUL prediction.
+- Load locally hosted models and download larger models from Hugging Face.
 
-To launch the application locally, run:
+### Try the Application
 
-```bash
-streamlit run app.py
-```
+🚀 **[Launch the Live Application](https://nasa-cmapss-rul-prediction-takc47paf5jckgwuuuovsz.streamlit.app/)**
 
-The command assumes your Streamlit entry-point file is named `app.py`.
+### Model Hosting
+
+The larger FD002 and FD004 model files are hosted separately on Hugging Face to avoid GitHub file-size limitations.
+
+🤗 **[View the Hugging Face Model Repository](https://huggingface.co/akhilm0001/nasa-cmaps-rul-models)**
+
+The application loads FD001 and FD003 models from the GitHub repository and retrieves FD002 and FD004 models from Hugging Face.
 
 ---
 
 ## 📁 Project Structure
 
-The following is the expected project structure based on the filenames and folders discussed for this project. Keep the structure consistent with the files actually present in your repository.
+The following structure reflects the main files used by the deployed application and the original analysis project. Some training and visualization files are optional for running the web application.
 
 ```text
-turbofan_engine_project/
+NASA-CMAPSS-RUL-Prediction/
 │
 ├── README.md
 ├── app.py
 ├── main.py
 ├── predictive_maintenance.ipynb
 ├── requirements.txt
+├── runtime.txt
 │
 ├── CMAPS_Data/
-│   ├── train_FD001.txt
-│   ├── train_FD002.txt
-│   ├── train_FD003.txt
-│   ├── train_FD004.txt
 │   ├── test_FD001.txt
 │   ├── test_FD002.txt
 │   ├── test_FD003.txt
-│   ├── test_FD004.txt
-│   ├── RUL_FD001.txt
-│   ├── RUL_FD002.txt
-│   ├── RUL_FD003.txt
-│   └── RUL_FD004.txt
+│   └── test_FD004.txt
 │
 ├── models/
-│   └── Trained model files
+│   ├── fd001_model.pkl
+│   └── fd003_model.pkl
 │
 └── images/
     ├── streamlit_prediction.png
     ├── model-performance.png
     ├── feature_importance_fd003.png
-    └── actal vs predicted fd003.png
+    └── actual vs predicted fd003.png
 ```
+
+**Note:** FD002 and FD004 model files are hosted in the separate Hugging Face repository. The training notebook, additional scripts, and image files should be retained according to the actual contents of your GitHub repository.
 
 ---
 
@@ -305,16 +320,16 @@ turbofan_engine_project/
 
 - Python
 - pip
-- Git (optional)
+- Git
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd turbofan_engine_project
+git clone https://github.com/akhilm0001/NASA-CMAPSS-RUL-Prediction.git
+cd NASA-CMAPSS-RUL-Prediction
 ```
 
-### 2. Create a virtual environment
+### 2. Create a Virtual Environment
 
 **Windows**
 
@@ -330,45 +345,49 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3. Install dependencies
-
-If the project contains a `requirements.txt` file:
+### 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Otherwise, install the required libraries:
-
-```bash
-pip install pandas numpy scikit-learn matplotlib seaborn streamlit jupyter
-```
-
----
-
-## ▶️ How to Run
-
-### Run the analysis notebook
-
-```bash
-jupyter notebook predictive_maintenance.ipynb
-```
-
-### Run the main Python script
-
-```bash
-python main.py
-```
-
-### Launch the Streamlit dashboard
+### 4. Launch the Streamlit Application
 
 ```bash
 streamlit run app.py
 ```
 
-Open the local URL printed in the terminal to access the dashboard.
+Open the local URL printed in the terminal to access the application.
 
-These commands assume the corresponding files exist in your project directory.
+**Important:** The required local model files and NASA test data must be present in the expected folders. The FD002 and FD004 models are downloaded from Hugging Face by the application.
+
+---
+
+## ▶️ How to Run
+
+### Run the Analysis Notebook
+
+If the notebook is present in your repository:
+
+```bash
+jupyter notebook predictive_maintenance.ipynb
+```
+
+### Run the Main Python Script
+
+If `main.py` exists and is intended to be executed independently:
+
+```bash
+python main.py
+```
+
+### Launch the Streamlit Dashboard
+
+```bash
+streamlit run app.py
+```
+
+The Streamlit command starts the interactive prediction application.
 
 ---
 
@@ -378,7 +397,9 @@ These commands assume the corresponding files exist in your project directory.
 - The selected model differed across the four evaluated datasets.
 - FD001 achieved the lowest reported test errors.
 - FD003 had the highest reported test errors among the four subsets.
-- Combining regression models with visualizations helps communicate predictive maintenance results.
+- Random Forest and Gradient Boosting provided the selected models for the respective datasets.
+- Combining trained regression models with an interactive web interface makes predictive maintenance results easier to explore.
+- Cloud deployment makes the application accessible through a browser.
 
 ---
 
@@ -390,7 +411,8 @@ These commands assume the corresponding files exist in your project directory.
 - Improve feature selection and sensor trend analysis.
 - Add prediction uncertainty estimates.
 - Enhance the dashboard with engine-level degradation trends.
-- Deploy the application to a cloud platform.
+- Add actual-versus-predicted comparisons and downloadable prediction results.
+- Improve automated model evaluation and deployment testing.
 
 ---
 
@@ -400,6 +422,7 @@ These commands assume the corresponding files exist in your project directory.
 2. [NASA C-MAPSS Dataset — Official Download](https://phm-datasets.s3.amazonaws.com/NASA/6.+Turbofan+Engine+Degradation+Simulation+Data+Set.zip)
 3. [Scikit-learn Documentation](https://scikit-learn.org/stable/)
 4. [Streamlit Documentation](https://docs.streamlit.io/)
+5. [Hugging Face Hub Documentation](https://huggingface.co/docs/huggingface_hub/index)
 
 ---
 
@@ -408,6 +431,11 @@ These commands assume the corresponding files exist in your project directory.
 **Akhil M**
 
 Mechanical Engineering Graduate | Machine Learning | Predictive Maintenance | Data Analytics
+
+- **GitHub:** [@akhilm0001](https://github.com/akhilm0001)
+- **Project Repository:** [NASA-CMAPSS-RUL-Prediction](https://github.com/akhilm0001/NASA-CMAPSS-RUL-Prediction)
+- **Live Application:** [NASA C-MAPSS RUL Prediction](https://nasa-cmapss-rul-prediction-takc47paf5jckgwuuuovsz.streamlit.app/)
+- **Model Repository:** [Hugging Face Models](https://huggingface.co/akhilm0001/nasa-cmaps-rul-models)
 
 ---
 
