@@ -3,13 +3,15 @@ import streamlit as st
 import joblib
 import pandas as pd
 from pathlib import Path
-
+from huggingface_hub import hf_hub_download
 
 # Project folders
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_DIR = BASE_DIR / "models"
 DATA_DIR = BASE_DIR / "CMAPS_Data"
 
+# Hugging Face model repository
+HF_REPO_ID = "akhilm0001/nasa-cmaps-rul-models"
 
 # NASA C-MAPSS column names
 columns = [
@@ -42,8 +44,32 @@ columns = [
 ]
 
 
+@st.cache_resource
+def load_model(dataset):
+    """Load local models or download models from Hugging Face."""
+
+    model_filename = f"{dataset.lower()}_model.pkl"
+
+    if dataset in ["FD002", "FD004"]:
+        model_path = hf_hub_download(
+            repo_id=HF_REPO_ID,
+            filename=model_filename,
+            repo_type="model",
+        )
+    else:
+        model_path = MODEL_DIR / model_filename
+
+        if not model_path.exists():
+            raise FileNotFoundError(
+                f"Model file not found: {model_path}"
+            )
+
+    return joblib.load(model_path)
+
+
 def load_test_data(dataset):
     """Load the selected NASA test file."""
+
     file_path = DATA_DIR / f"test_{dataset}.txt"
 
     if not file_path.exists():
@@ -60,6 +86,7 @@ def load_test_data(dataset):
 
 def get_model_features(model):
     """Get the feature names stored by the trained model."""
+
     if hasattr(model, "feature_names_in_"):
         return list(model.feature_names_in_)
 
@@ -74,6 +101,7 @@ def main():
     )
 
     st.title("NASA C-MAPSS Remaining Useful Life Prediction")
+
     st.write(
         "Predict the Remaining Useful Life (RUL) of an aircraft engine "
         "using trained machine learning models."
@@ -89,16 +117,13 @@ def main():
         ["NASA Test Data", "Manual / New Engine Data"],
     )
 
-    model_path = MODEL_DIR / f"{dataset.lower()}_model.pkl"
-
-    if not model_path.exists():
-        st.error(f"Model file not found: {model_path}")
-        return
-
+    # Load the selected model
     try:
-        model = joblib.load(model_path)
+        with st.spinner(f"Loading {dataset} model..."):
+            model = load_model(dataset)
+
     except Exception as error:
-        st.error(f"Could not load the model: {error}")
+        st.error(f"Could not load the {dataset} model: {error}")
         return
 
     expected_features = get_model_features(model)
@@ -106,19 +131,20 @@ def main():
     if expected_features is None:
         st.error(
             "This model does not expose feature_names_in_. "
-            "We need to check the original training code to identify "
+            "Check the original training code to identify "
             "the exact input features."
         )
         return
 
-    st.caption(f"Model loaded: {dataset}")
+    st.caption(f"Model loaded successfully: {dataset}")
 
-    # Display the exact features expected by the saved model
     with st.expander("Check model input features"):
         st.write("Features expected by the model:")
         st.write(expected_features)
 
+    # NASA test data mode
     if input_mode == "NASA Test Data":
+
         test_df = load_test_data(dataset)
 
         if test_df is None:
@@ -139,7 +165,6 @@ def main():
             st.warning("No data found for this engine.")
             return
 
-        # Check whether all model features exist in the NASA data
         missing_features = [
             feature
             for feature in expected_features
@@ -148,12 +173,12 @@ def main():
 
         if missing_features:
             st.error(
-                f"NASA data is missing required features: "
+                "NASA data is missing required features: "
                 f"{missing_features}"
             )
             return
 
-        # Use the model's original feature names and order
+        # Use the final available cycle for the selected engine
         input_data = engine_data.iloc[[-1]][expected_features]
 
         st.subheader("Selected engine data")
@@ -161,24 +186,28 @@ def main():
 
         if st.button("Predict RUL"):
             try:
-                prediction = model.predict(input_data)[0]
+                prediction = float(model.predict(input_data)[0])
 
                 st.success(
-                    f"Predicted Remaining Useful Life: "
+                    "Predicted Remaining Useful Life: "
                     f"{max(0, prediction):.2f} cycles"
                 )
+
             except Exception as error:
                 st.error(f"Prediction failed: {error}")
 
+    # Manual input mode
     else:
         st.subheader("Enter engine sensor values")
+
         st.info(
-            "Enter the values for the features expected by the model."
+            "Enter values for the features expected by the model."
         )
 
         values = {}
 
         for feature in expected_features:
+
             if feature == "time_cycles":
                 values[feature] = st.number_input(
                     feature,
@@ -186,12 +215,14 @@ def main():
                     value=1.0,
                     step=1.0,
                 )
+
             elif feature.startswith("operational_setting"):
                 values[feature] = st.number_input(
                     feature,
                     value=0.0,
                     format="%.5f",
                 )
+
             else:
                 values[feature] = st.number_input(
                     feature,
@@ -206,12 +237,13 @@ def main():
             )
 
             try:
-                prediction = model.predict(input_data)[0]
+                prediction = float(model.predict(input_data)[0])
 
                 st.success(
-                    f"Predicted Remaining Useful Life: "
+                    "Predicted Remaining Useful Life: "
                     f"{max(0, prediction):.2f} cycles"
                 )
+
             except Exception as error:
                 st.error(f"Prediction failed: {error}")
 
