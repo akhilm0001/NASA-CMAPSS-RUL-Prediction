@@ -430,7 +430,7 @@ The Streamlit command starts the interactive prediction application.
 
 **Akhil M**
 
-Mechanical Engineering Graduate | Machine Learning | Predictive Maintenance | Data Analytics
+Machine Learning | Predictive Maintenance | Data Analytics
 
 - **GitHub:** [@akhilm0001](https://github.com/akhilm0001)
 - **Project Repository:** [NASA-CMAPSS-RUL-Prediction](https://github.com/akhilm0001/NASA-CMAPSS-RUL-Prediction)
